@@ -1,3 +1,3 @@
 # Pixel Vignette Tool
 
-Pixel art vignette generator: ayarlanabilir pixel boyutu, nüfuz (derinlik), güç, genişlik/yükseklik, preview resmi, PNG export. `index.html` dosyasını tarayıcıda aç, kurulum yok.
+Pixel art vignette generator. Adjustable pixel size, depth, strength, width and height, with a preview image and PNG export. Just open `index.html` in a browser, no install needed.

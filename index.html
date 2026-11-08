@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Pixel Vignette Tool</title>
@@ -24,41 +24,41 @@
 <div id="wrap">
   <div id="panel">
     <div class="row">
-      <div><label>Genişlik <input type="number" id="w" value="480" min="8"></label></div>
-      <div><label>Yükseklik <input type="number" id="h" value="270" min="8"></label></div>
+      <div><label>Width <input type="number" id="w" value="480" min="8"></label></div>
+      <div><label>Height <input type="number" id="h" value="270" min="8"></label></div>
     </div>
 
-    <label>Pixel boyutu: <span id="pxV"></span>
+    <label>Pixel size: <span id="pxV"></span>
       <input type="range" id="px" min="1" max="32" value="6"></label>
 
-    <label>Nüfuz (içeri ne kadar girsin): <span id="depV"></span>%
+    <label>Depth (how far it reaches inward): <span id="depV"></span>%
       <input type="range" id="dep" min="1" max="100" value="40"></label>
 
-    <label>Güç (en koyu nokta): <span id="strV"></span>%
+    <label>Strength (darkest point): <span id="strV"></span>%
       <input type="range" id="str" min="0" max="100" value="80"></label>
 
-    <label>Stil
+    <label>Style
       <select id="style">
-        <option value="bands">Kademeli bantlar</option>
-        <option value="dither">Dither (desenli)</option>
-        <option value="soft">Yumuşak (pikselli geçiş)</option>
+        <option value="bands">Stepped bands</option>
+        <option value="dither">Dither (patterned)</option>
+        <option value="soft">Soft (pixelated gradient)</option>
       </select></label>
 
-    <label>Bant sayısı (kademeli stil): <span id="bndV"></span>
+    <label>Band count (stepped style): <span id="bndV"></span>
       <input type="range" id="bnd" min="2" max="16" value="5"></label>
 
-    <label>Şekil
+    <label>Shape
       <select id="shape">
-        <option value="rect">Dikdörtgen (kenarlardan)</option>
-        <option value="oval">Oval (köşelerden)</option>
+        <option value="rect">Rectangle (from edges)</option>
+        <option value="oval">Oval (from corners)</option>
       </select></label>
 
-    <label>Renk <input type="color" id="col" value="#000000"></label>
+    <label>Color <input type="color" id="col" value="#000000"></label>
 
-    <label>Preview resmi <input type="file" id="img" accept="image/*"></label>
-    <button id="fit">Boyutu resme eşitle</button>
-    <label><input type="checkbox" id="only"> PNG'ye sadece vinyeti kaydet (şeffaf)</label>
-    <button id="save">PNG indir</button>
+    <label>Preview image <input type="file" id="img" accept="image/*"></label>
+    <button id="fit">Match size to image</button>
+    <label><input type="checkbox" id="only"> Export vignette only (transparent PNG)</label>
+    <button id="save">Download PNG</button>
   </div>
   <div id="view"><canvas id="c"></canvas></div>
 </div>
