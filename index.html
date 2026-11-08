@@ -54,6 +54,8 @@
       </select></label>
 
     <label>Color <input type="color" id="col" value="#000000"></label>
+    <label>Background (no image) <input type="color" id="bg" value="#ffffff"></label>
+    <button id="ref">Preset: grey pixel gradient</button>
 
     <label>Preview image <input type="file" id="img" accept="image/*"></label>
     <button id="fit">Match size to image</button>
@@ -106,6 +108,7 @@ function draw(forExport) {
   c.width = v.W; c.height = v.H;
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0,0,v.W,v.H);
+  if (!img && !(forExport && $('only').checked)) { ctx.fillStyle = $('bg').value; ctx.fillRect(0,0,v.W,v.H); }
   if (img && !(forExport && $('only').checked)) {
     const s = Math.max(v.W/img.width, v.H/img.height);
     const dw = img.width*s, dh = img.height*s;
@@ -130,6 +133,11 @@ $('img').addEventListener('change', e => {
   im.onload = () => { img = im; update(); };
   im.src = URL.createObjectURL(f);
 });
+$('ref').onclick = () => {
+  const s = {w:650,h:442,px:26,dep:100,str:35,style:'soft',shape:'oval',col:'#6e7078',bg:'#ffffff'};
+  for (const k in s) $(k).value = s[k];
+  update();
+};
 $('fit').onclick = () => { if (img) { $('w').value = img.width; $('h').value = img.height; update(); } };
 $('save').onclick = () => {
   draw(true);
