@@ -14,7 +14,7 @@
   .row { display: flex; gap: 8px; }
   .row > div { flex: 1; }
   button { margin-top: 10px; padding: 5px 10px; }
-  #view { background: #ccc; border: 1px solid #999; padding: 8px; }
+  #view { line-height: 0; }
   canvas { max-width: 100%; image-rendering: pixelated; display: block; background:
     repeating-conic-gradient(#fff 0% 25%, #ddd 0% 50%) 0 0 / 16px 16px; }
 </style>
@@ -59,7 +59,15 @@
 
     <label>Color <input type="color" id="col" value="#000000"></label>
     <label>Background (no image) <input type="color" id="bg" value="#ffffff"></label>
-    <button id="ref">Preset: grey pixel gradient</button>
+    <label>Presets (keep your width/height)
+      <select id="preset">
+        <option value="">Choose a preset...</option>
+        <option value="grey">Light grey pixel gradient</option>
+        <option value="dark">Dark corners (soft)</option>
+        <option value="steps">Dark stepped bands</option>
+        <option value="dither">Dithered edges</option>
+        <option value="thin">Thin edge shade</option>
+      </select></label>
 
     <label>Preview image <input type="file" id="img" accept="image/*"></label>
     <button id="fit">Match size to image</button>
@@ -91,7 +99,8 @@ function vignetteCanvas() {
   const sctx = small.getContext('2d'), data = sctx.createImageData(cw, ch);
   const depthPx = depth * Math.min(W,H) / 2;
   for (let j=0;j<ch;j++) for (let i=0;i<cw;i++) {
-    const x = (i+.5)*px, y = (j+.5)*px;
+    // center of the visible part of the cell (edge cells may be partial)
+    const x = (i*px + Math.min((i+1)*px, W)) / 2, y = (j*px + Math.min((j+1)*px, H)) / 2;
     let t;
     if (shape === 'rect') {
       const e = Math.min(x, W-x, y, H-y);
@@ -164,11 +173,23 @@ document.querySelectorAll('#panel input, #panel select').forEach(e => e.addEvent
 $('img').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   const im = new Image();
-  im.onload = () => { img = im; update(); };
+  im.onload = () => { img = im; $('w').value = im.width; $('h').value = im.height; lastW = im.width; update(); };
   im.src = URL.createObjectURL(f);
 });
-$('ref').onclick = () => {
-  applySettings({w:650,h:442,px:26,dep:45,str:40,crv:1.6,style:'soft',shape:'oval',col:'#6e7078',bg:'#ffffff'});
+// cells = how many pixels across the image width, so presets look the same at any size
+const PRESETS = {
+  grey:   {cells:25, dep:100, str:35, crv:1.2, style:'soft',   shape:'oval', col:'#6e7078', bg:'#ffffff'},
+  dark:   {cells:60, dep:50,  str:70, crv:1.5, style:'soft',   shape:'oval', col:'#000000', bg:'#ffffff'},
+  steps:  {cells:50, dep:30,  str:80, crv:1,   style:'bands',  shape:'rect', col:'#000000', bg:'#ffffff', bnd:5},
+  dither: {cells:80, dep:45,  str:90, crv:1,   style:'dither', shape:'oval', col:'#000000', bg:'#ffffff'},
+  thin:   {cells:80, dep:15,  str:70, crv:1,   style:'soft',   shape:'rect', col:'#000000', bg:'#ffffff'}
+};
+$('preset').onchange = () => {
+  const p = PRESETS[$('preset').value]; if (!p) return;
+  const s = Object.assign({}, p);
+  s.px = Math.min(128, Math.max(1, Math.round($('w').value / p.cells)));
+  delete s.cells;
+  applySettings(s);
 };
 $('fit').onclick = () => { if (img) { $('w').value = img.width; $('h').value = img.height; update(); } };
 $('save').onclick = () => {
